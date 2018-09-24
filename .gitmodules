@@ -1,0 +1,4 @@
+[submodule "mavlink.net"]
+	path = mavlink.net
+	url = git@github.com:asvol/mavlink.net.git
+	branch = master
