@@ -27,5 +27,5 @@ set BUILD_STATUS=%ERRORLEVEL%
 if %BUILD_STATUS%==0 echo "======== Build success ==========="
 if not %BUILD_STATUS%==0 echo "=======! Build failed !==========" && exit /b 1
 
-zsh "tools/merge_release.sh" ./bin/release/Asv.Mavlink.Gen.exe ./bin/publish/mavgen-net.exe
+zsh "tools/merge_release.sh" ./bin/release/Asv.Mavlink.Shell.exe ./bin/publish/mavshell-net.exe
 
