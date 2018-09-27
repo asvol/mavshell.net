@@ -22,6 +22,8 @@ namespace Asv.Mavlink.Shell
         private DateTime _lastUpdate = DateTime.Now;
         private readonly List<IPacketV2<IPayload>> _lastPackets = new List<IPacketV2<IPayload>>();
         private int MaxHistorySize = 20;
+        private int _packetCount;
+        private int _lastPacketCount;
 
         public ListenCommand()
         {
@@ -35,6 +37,7 @@ namespace Asv.Mavlink.Shell
 
             var strm = RemoteStreamFactory.CreateStream(_connectionString);
             var decoder = new PacketV2Decoder();
+            decoder.OutError.Subscribe(_=>OnError(_));
             decoder.RegisterCommonDialect();
             decoder.Subscribe(OnPacket);
             strm.SelectMany(_ => _).Subscribe(decoder);
@@ -45,6 +48,27 @@ namespace Asv.Mavlink.Shell
                 Thread.Sleep(3000);
             }
             return 0;
+        }
+
+        private void OnError(DeserizliaePackageException ex)
+        {
+            try
+            {
+                _rw.EnterWriteLock();
+                var exist = _items.FirstOrDefault(_ => ex.MessageId == _.Msg);
+                if (exist == null)
+                {
+                    _items.Add(new DisplayRow { Msg = ex.MessageId, Message = ex.Message });
+                }
+                else
+                {
+                    exist.Count++;
+                }
+            }
+            finally
+            {
+                _rw.ExitWriteLock();
+            }
         }
 
         private void Redraw()
@@ -70,9 +94,10 @@ namespace Asv.Mavlink.Shell
             _lastUpdate = DateTime.Now;
             Console.Clear();
             Console.WriteLine("Press Q for exit");
-            Console.WriteLine("MAVLink inspector:");
-            TextTable.PrintTableFromObject(Console.WriteLine,new  DoubleTextTableBorder(),1,int.MaxValue,items,_=>_.Msg,_=>_.Message,_=>_.Freq);
-            Console.WriteLine("Last {0} packets:",packets.Length);
+            Console.WriteLine("MAVLink inspector {0:0.0 Hz}:", ((_packetCount - _lastPacketCount) / time.TotalSeconds));
+            TextTable.PrintTableFromObject(Console.WriteLine,new  DoubleTextTableBorder(),1,int.MaxValue,items.OrderBy(_=>_.Msg),_=>_.Msg,_=>_.Message,_=>_.Freq);
+            Console.WriteLine("Last {0} packets of {1}:",packets.Length, _packetCount);
+            _lastPacketCount = _packetCount;
             foreach (var packetV2 in packets)
             {
                 Console.WriteLine(packetV2);
@@ -96,6 +121,7 @@ namespace Asv.Mavlink.Shell
 
         private void OnPacket(IPacketV2<IPayload> packet)
         {
+            Interlocked.Increment(ref _packetCount);
             try
             {
                 _rw.EnterWriteLock();
