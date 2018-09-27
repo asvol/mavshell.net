@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Decoder;
@@ -14,29 +15,30 @@ namespace Asv.Mavlink.Shell
 {
     public class ListenCommand:ConsoleCommand
     {
-        private int _port;
-        readonly CancellationTokenSource _cancel = new CancellationTokenSource();
-        private IPEndPoint _from;
-        private UdpClient _recv;
-        private ReaderWriterLockSlim _rw = new ReaderWriterLockSlim();
-        private List<DisplayRow> _items = new List<DisplayRow>();
-        private IPEndPoint _sendTo;
-        private DateTime _lastUpdate;
+        private string _connectionString = "udp://0.0.0.0:14560";
+        private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
+        private readonly ReaderWriterLockSlim _rw = new ReaderWriterLockSlim();
+        private readonly List<DisplayRow> _items = new List<DisplayRow>();
+        private DateTime _lastUpdate = DateTime.Now;
+        private readonly List<IPacketV2<IPayload>> _lastPackets = new List<IPacketV2<IPayload>>();
+        private int MaxHistorySize = 20;
 
         public ListenCommand()
         {
             IsCommand("listen", "Listen MAVLink packages and print statistic");
-            HasOption("p|port=", $"UDP port. Default '{_port}'", (int _) => _port = _);
+            HasOption("cs=", $"Connection string. Default '{_connectionString}'", _ => _connectionString = _);
         }
 
         public override int Run(string[] remainingArguments)
         {
-            var listenerIp = new IPEndPoint(IPAddress.Any, 14560);
-            _recv = new UdpClient(listenerIp);
+            Task.Factory.StartNew(KeyListen);
 
-            Task.Factory.StartNew(AsyncListen,_cancel.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-            Task.Factory.StartNew(KeyListen, _cancel.Token,TaskCreationOptions.LongRunning, TaskScheduler.Default);
-            _lastUpdate = DateTime.Now;
+            var strm = RemoteStreamFactory.CreateStream(_connectionString);
+            var decoder = new PacketV2Decoder();
+            decoder.RegisterCommonDialect();
+            decoder.Subscribe(OnPacket);
+            strm.SelectMany(_ => _).Subscribe(decoder);
+            strm.Start(CancellationToken.None);
             while (!_cancel.IsCancellationRequested)
             {
                 Redraw();
@@ -47,12 +49,13 @@ namespace Asv.Mavlink.Shell
 
         private void Redraw()
         {
-            
             DisplayRow[] items;
+            IPacketV2<IPayload>[] packets;
             try
             {
                 _rw.EnterReadLock();
                 items = _items.ToArray();
+                packets = _lastPackets.ToArray();
             }
             finally
             {
@@ -66,9 +69,15 @@ namespace Asv.Mavlink.Shell
             }
             _lastUpdate = DateTime.Now;
             Console.Clear();
-            TextTable.PrintTableFromObject(Console.WriteLine,new  DoubleTextTableBorder(),1,int.MaxValue,items,_=>_.Msg,_=>_.Message,_=>_.Freq);
-
             Console.WriteLine("Press Q for exit");
+            Console.WriteLine("MAVLink inspector:");
+            TextTable.PrintTableFromObject(Console.WriteLine,new  DoubleTextTableBorder(),1,int.MaxValue,items,_=>_.Msg,_=>_.Message,_=>_.Freq);
+            Console.WriteLine("Last {0} packets:",packets.Length);
+            foreach (var packetV2 in packets)
+            {
+                Console.WriteLine(packetV2);
+            }
+            
         }
 
         private void KeyListen()
@@ -78,35 +87,20 @@ namespace Asv.Mavlink.Shell
                 var key = Console.ReadKey(true);
                 switch (key.Key)
                 {
-                        case ConsoleKey.Q:
+                    case ConsoleKey.Q:
                         _cancel.Cancel(false);
                         break;
                 }
             }
         }
 
-        private void AsyncListen()
-        {
-            var decoder = new PacketV2Decoder();
-            decoder.RegisterCommonDialect();
-            decoder.Subscribe(OnPacket);
-            while (true)
-            {
-                _from = new IPEndPoint(IPAddress.Any, 0);
-                var a = _recv.Receive(ref _from);
-                _sendTo = _from;
-                foreach (var b in a)
-                {
-                    decoder.OnNext(b);
-                }
-            }
-        }
-
-        public void OnPacket(IPacketV2<IPayload> packet)
+        private void OnPacket(IPacketV2<IPayload> packet)
         {
             try
             {
                 _rw.EnterWriteLock();
+                _lastPackets.Add(packet);
+                if (_lastPackets.Count >= MaxHistorySize) _lastPackets.RemoveAt(0);
                 var exist = _items.FirstOrDefault(_ => packet.MessageId == _.Msg);
                 if (exist == null)
                 {
