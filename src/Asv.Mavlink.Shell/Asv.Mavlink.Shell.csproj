@@ -75,7 +75,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cmd\Command.cs" />
-    <Compile Include="Cmd\ListenCommand.cs" />
+    <Compile Include="Cmd\MavlinkCommand.cs" />
+    <Compile Include="Cmd\PrintPx4VehicleState.cs" />
+    <Compile Include="Cmd\PrintVehicleState.cs" />
+    <Compile Include="Cmd\VehicleCommandBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\AssemblyInfoHelper.cs" />

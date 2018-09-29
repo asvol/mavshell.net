@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Asv.Mavlink.Decoder;
 using Asv.Mavlink.V2.Common;
 using ManyConsole;
 
 namespace Asv.Mavlink.Shell
 {
-    public class ListenCommand:ConsoleCommand
+    public class MavlinkCommand:ConsoleCommand
     {
         private string _connectionString = "udp://0.0.0.0:14560";
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
@@ -25,23 +20,18 @@ namespace Asv.Mavlink.Shell
         private int _packetCount;
         private int _lastPacketCount;
 
-        public ListenCommand()
+        public MavlinkCommand()
         {
-            IsCommand("listen", "Listen MAVLink packages and print statistic");
+            IsCommand("mavlink", "Listen MAVLink packages and print statistic");
             HasOption("cs=", $"Connection string. Default '{_connectionString}'", _ => _connectionString = _);
         }
 
         public override int Run(string[] remainingArguments)
         {
             Task.Factory.StartNew(KeyListen);
-
-            var strm = RemoteStreamFactory.CreateStream(_connectionString);
-            var decoder = new PacketV2Decoder();
-            decoder.OutError.Subscribe(_=>OnError(_));
-            decoder.RegisterCommonDialect();
-            decoder.Subscribe(OnPacket);
-            strm.SelectMany(_ => _).Subscribe(decoder);
-            strm.Start(CancellationToken.None);
+            var conn = new MavlinkV2Connection(_connectionString, _=>_.RegisterCommonDialect());
+            conn.Subscribe(OnPacket);
+            conn.DeserizliaePackageErrors.Subscribe(OnError);
             while (!_cancel.IsCancellationRequested)
             {
                 Redraw();

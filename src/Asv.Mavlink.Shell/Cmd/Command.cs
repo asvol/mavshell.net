@@ -3,7 +3,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
-using Asv.Mavlink.Decoder;
 using Asv.Mavlink.V2.Common;
 using ManyConsole;
 
@@ -21,24 +20,21 @@ namespace Asv.Mavlink.Shell
 
         public override int Run(string[] remainingArguments)
         {
-            var strm = RemoteStreamFactory.CreateStream(_connectionString);
-            var decoder = new PacketV2Decoder();
-            var encoder = new PacketV2Encoder();
-            decoder.OutError.Subscribe(_ => OnError(_));
-            decoder.Where(_ => _.MessageId == StatustextPacket.PacketMessageId).Cast<StatustextPacket>()
+            var conn = new MavlinkV2Connection(_connectionString, _=>_.RegisterCommonDialect());
+
+
+            conn.DeserizliaePackageErrors.Subscribe(_ => OnError(_));
+            conn.Port.Error.Subscribe(_ => Console.WriteLine($"Connection error:{_.Message}"));
+            conn.Where(_ => _.MessageId == StatustextPacket.PacketMessageId).Cast<StatustextPacket>()
                 .Select(_ => new string(_.Payload.Text)).Subscribe(_ => Console.WriteLine(_));
 
-            decoder.Where(_ => _.MessageId == HeartbeatPacket.PacketMessageId).Cast<HeartbeatPacket>()
+            conn.Where(_ => _.MessageId == HeartbeatPacket.PacketMessageId).Cast<HeartbeatPacket>()
                 .Subscribe(_ => Console.WriteLine($"BaseMode:{_.Payload.BaseMode:F} CustomMode:{_.Payload.CustomMode} "));
 
-            encoder.Subscribe(strm);
             //BaseMode: MavModeFlagCustomModeEnabled, MavModeFlagStabilizeEnabled, MavModeFlagManualInputEnabled, MavModeFlagSafetyArmed CustomMode:458752
-            decoder.RegisterCommonDialect();
-            strm.SelectMany(_ => _).Subscribe(decoder);
-            strm.Start(CancellationToken.None);
-            var a = decoder.Take(1).ToTask().Result;
+            var a = conn.Take(1).ToTask().Result;
             Console.ReadLine();
-            var cmd = new MavlinkCommandProtocol(decoder, encoder);
+            var cmd = new MavlinkCommandProtocol(conn);
 
 
 
