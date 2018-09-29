@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,6 +63,8 @@ namespace Asv.Mavlink.Shell
                 {nameof(SysStatusPayload.ErrorsComm),vehicle.SysStatus.Value?.ErrorsComm.ToString() ?? string.Empty},
                 {nameof(SysStatusPayload.Load),TextRender.Progress((vehicle.SysStatus.Value?.Load ?? 0) / 1000.0, percentWidth )},
                 {nameof(SysStatusPayload.VoltageBattery),vehicle.SysStatus.Value?.VoltageBattery.ToString() ?? string.Empty},
+                {nameof(GpsRawIntPayload.Alt),((vehicle.GpsRawInt.Value?.Alt ?? double.NaN) / 1000.0).ToString("F1")},
+                
             };
             GetAddidtionslParams(vehicle, dict);
             TextTable.PrintKeyValue(Console.WriteLine, new DoubleTextTableBorder(), dict.Max(_=>_.Key.Length),dict.Max(_=>_.Value.Length), "Vehicle", dict);
@@ -76,6 +79,9 @@ namespace Asv.Mavlink.Shell
                 {
                     case ConsoleKey.Q:
                         _cancel.Cancel(false);
+                        break;
+                    case ConsoleKey.T:
+                        Vehicle.TakeOff(0,float.NaN, 55.146524f, 61.406014f, Vehicle.GpsRawInt.Value.Alt + 50f, CancellationToken.None).Wait();
                         break;
                 }
             }

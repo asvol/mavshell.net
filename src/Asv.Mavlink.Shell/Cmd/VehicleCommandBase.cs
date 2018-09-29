@@ -17,8 +17,11 @@ namespace Asv.Mavlink.Shell
         public override int Run(string[] remainingArguments)
         {
             var cfg = new VehicleConfig {ConnectionString = _connectionString};
-            return RunAsync(CreateVehicle(cfg)).Result;
+            Vehicle = CreateVehicle(cfg);
+            return RunAsync(Vehicle).Result;
         }
+
+        public IVehicle Vehicle { get; private set; }
 
         protected abstract IVehicle CreateVehicle(VehicleConfig config);
 
