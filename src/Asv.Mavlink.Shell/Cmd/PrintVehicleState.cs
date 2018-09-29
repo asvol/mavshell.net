@@ -45,7 +45,7 @@ namespace Asv.Mavlink.Shell
         private void Print(IVehicle vehicle)
         {
             Console.Clear();
-
+            const int percentWidth = 30;
             var dict = new Dictionary<string,string>
             {
                 {nameof(Vehicle.Link),vehicle.Link.Value.ToString() },
@@ -56,6 +56,12 @@ namespace Asv.Mavlink.Shell
                 {nameof(HeartbeatPayload.BaseMode),vehicle.Heartbeat.Value?.BaseMode.ToString("F")?? string.Empty},
                 {nameof(HeartbeatPayload.CustomMode),vehicle.Heartbeat.Value?.CustomMode.ToString() ?? string.Empty},
                 {nameof(HeartbeatPayload.MavlinkVersion),vehicle.Heartbeat.Value?.MavlinkVersion.ToString() ?? string.Empty},
+                {nameof(SysStatusPayload.BatteryRemaining),vehicle.SysStatus.Value?.BatteryRemaining.ToString() ?? string.Empty},
+                {nameof(SysStatusPayload.CurrentBattery),vehicle.SysStatus.Value?.CurrentBattery.ToString() ?? string.Empty},
+                {nameof(SysStatusPayload.DropRateComm), TextRender.Progress(((vehicle.SysStatus.Value?.DropRateComm) ?? 0) / 10000.0, percentWidth )},
+                {nameof(SysStatusPayload.ErrorsComm),vehicle.SysStatus.Value?.ErrorsComm.ToString() ?? string.Empty},
+                {nameof(SysStatusPayload.Load),TextRender.Progress((vehicle.SysStatus.Value?.Load ?? 0) / 1000.0, percentWidth )},
+                {nameof(SysStatusPayload.VoltageBattery),vehicle.SysStatus.Value?.VoltageBattery.ToString() ?? string.Empty},
             };
             GetAddidtionslParams(vehicle, dict);
             TextTable.PrintKeyValue(Console.WriteLine, new DoubleTextTableBorder(), dict.Max(_=>_.Key.Length),dict.Max(_=>_.Value.Length), "Vehicle", dict);

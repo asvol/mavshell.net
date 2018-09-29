@@ -81,9 +81,14 @@
     <Compile Include="Cmd\VehicleCommandBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RS.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RS.resx</DependentUpon>
+    </Compile>
     <Compile Include="Tools\AssemblyInfoHelper.cs" />
     <Compile Include="Tools\ConsoleWelcomePrinter.cs" />
-    <Compile Include="Tools\StringExtensions.cs" />
+    <Compile Include="Tools\TextRender.cs" />
     <Compile Include="Tools\TextTable.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +100,13 @@
       <Project>{21c4c26f-cfce-49e1-b045-717fdfeb5fa0}</Project>
       <Name>Asv.Mavlink</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RS.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RS.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
