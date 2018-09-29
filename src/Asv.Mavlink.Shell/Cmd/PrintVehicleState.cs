@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.V2.Common;
@@ -57,7 +58,7 @@ namespace Asv.Mavlink.Shell
                 {nameof(HeartbeatPayload.MavlinkVersion),vehicle.Heartbeat.Value?.MavlinkVersion.ToString() ?? string.Empty},
             };
             GetAddidtionslParams(vehicle, dict);
-            TextTable.PrintKeyValue(Console.WriteLine, new DoubleTextTableBorder(), 20,20, "Vehicle", dict);
+            TextTable.PrintKeyValue(Console.WriteLine, new DoubleTextTableBorder(), dict.Max(_=>_.Key.Length),dict.Max(_=>_.Value.Length), "Vehicle", dict);
         }
 
         private void KeyListen(object a)

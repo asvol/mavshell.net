@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Asv.Mavlink.Shell
 {
@@ -16,7 +17,7 @@ namespace Asv.Mavlink.Shell
 
         protected override void GetAddidtionslParams(IVehicle vehicle, IDictionary<string, string> paramsToPrint)
         {
-            paramsToPrint.Add("PX4CustomMode", ((IVehiclePx4)vehicle).Mode.Value?.Mode.ToString());
+            paramsToPrint.Add("PX4CustomMode", ((IVehiclePx4)vehicle).Mode.Value?.Mode.ToString() ?? String.Empty);
         }
     }
 }
