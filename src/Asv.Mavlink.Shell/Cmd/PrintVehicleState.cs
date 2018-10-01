@@ -63,6 +63,7 @@ namespace Asv.Mavlink.Shell
                 {nameof(SysStatusPayload.ErrorsComm),vehicle.SysStatus.Value?.ErrorsComm.ToString() ?? string.Empty},
                 {nameof(SysStatusPayload.Load),TextRender.Progress((vehicle.SysStatus.Value?.Load ?? 0) / 1000.0, percentWidth )},
                 {nameof(SysStatusPayload.VoltageBattery),vehicle.SysStatus.Value?.VoltageBattery.ToString() ?? string.Empty},
+                {nameof(Vehicle.Gps),vehicle.Gps.Value.ToString() },
                 {nameof(GpsRawIntPayload.Alt),((vehicle.GpsRawInt.Value?.Alt ?? double.NaN) / 1000.0).ToString("F1")},
                 
             };
