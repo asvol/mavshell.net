@@ -78,11 +78,19 @@ namespace Asv.Mavlink.Shell
                 var key = Console.ReadKey(true);
                 switch (key.Key)
                 {
+                    case ConsoleKey.UpArrow:
+                        var p = Vehicle.ReadParam("MPC_XY_VEL_MAX", CancellationToken.None).Result;
+                        Vehicle.WriteParam("MPC_XY_VEL_MAX", p.RealValue.Value + 1.0f, _cancel.Token).Wait();
+                        break;
+                    case ConsoleKey.DownArrow:
+                        var p2 = Vehicle.ReadParam("MPC_XY_VEL_MAX", CancellationToken.None).Result;
+                        Vehicle.WriteParam("MPC_XY_VEL_MAX", p2.RealValue.Value - 1.0f, _cancel.Token).Wait();
+                        break;
                     case ConsoleKey.Q:
                         _cancel.Cancel(false);
                         break;
                     case ConsoleKey.T:
-                        Vehicle.TakeOff(0,float.NaN, 55.146524f, 61.406014f, Vehicle.GpsRawInt.Value.Alt + 50f, CancellationToken.None).Wait();
+                        Vehicle.TakeOff(0,90, (float) Vehicle.Gps.Value.Latitude, (float) Vehicle.Gps.Value.Longitude, (float) (Vehicle.Gps.Value.Altitude.Value + 50f), CancellationToken.None).Wait();
                         break;
                     case ConsoleKey.A:
                         Vehicle.Arm(CancellationToken.None).Wait();

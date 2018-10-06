@@ -24,8 +24,6 @@ namespace Asv.Mavlink.Shell
         {
             IsCommand("params", "Read all params from Vehicle");
             HasOption("p|pageSize=", $"max size of rows in table. Default={_pageSize}", (int p) => _pageSize = p);
-            Task.Factory.StartNew(_=>KeyListen(), _cancel.Token);
-            Console.CancelKeyPress += Console_CancelKeyPress;
             _userInput.Where(_=>_.Key == ConsoleKey.Backspace && !string.IsNullOrEmpty(_search)).Subscribe(_=>
             {
                 _skip = 0;
@@ -67,6 +65,8 @@ namespace Asv.Mavlink.Shell
 
         protected override IVehicle CreateVehicle(VehicleConfig config)
         {
+            Task.Factory.StartNew(_ => KeyListen(), _cancel.Token);
+            Console.CancelKeyPress += Console_CancelKeyPress;
             return new Vehicle(config);
         }
 
