@@ -6,7 +6,7 @@ namespace Asv.Mavlink.Shell
 {
     public abstract class VehicleCommandBase : ConsoleCommand
     {
-        private string _connectionString = "udp://192.168.0.140:14560";
+        private string _connectionString = "udp://0.0.0.0:14560";
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
         protected VehicleCommandBase()
