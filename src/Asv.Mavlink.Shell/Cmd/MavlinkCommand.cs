@@ -35,7 +35,7 @@ namespace Asv.Mavlink.Shell
             while (!_cancel.IsCancellationRequested)
             {
                 Redraw();
-                Task.Delay(3000,_cancel.Token);
+                Task.Delay(3000,_cancel.Token).Wait();
             }
             return 0;
         }

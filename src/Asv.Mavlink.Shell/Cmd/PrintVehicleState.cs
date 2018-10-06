@@ -51,20 +51,21 @@ namespace Asv.Mavlink.Shell
             {
                 {nameof(Vehicle.Link),vehicle.Link.Value.ToString() },
                 {nameof(Vehicle.PacketRateHz),vehicle.PacketRateHz.Value.ToString("0 Hz") },
-                {nameof(HeartbeatPayload.SystemStatus),vehicle.Heartbeat.Value?.SystemStatus.ToString() ?? string.Empty},
-                {nameof(HeartbeatPayload.Type),vehicle.Heartbeat.Value?.Type.ToString()?? string.Empty },
-                {nameof(HeartbeatPayload.Autopilot),vehicle.Heartbeat.Value?.Autopilot.ToString()?? string.Empty},
-                {nameof(HeartbeatPayload.BaseMode),vehicle.Heartbeat.Value?.BaseMode.ToString("F")?? string.Empty},
-                {nameof(HeartbeatPayload.CustomMode),vehicle.Heartbeat.Value?.CustomMode.ToString() ?? string.Empty},
-                {nameof(HeartbeatPayload.MavlinkVersion),vehicle.Heartbeat.Value?.MavlinkVersion.ToString() ?? string.Empty},
-                {nameof(SysStatusPayload.BatteryRemaining),vehicle.SysStatus.Value?.BatteryRemaining.ToString() ?? string.Empty},
-                {nameof(SysStatusPayload.CurrentBattery),vehicle.SysStatus.Value?.CurrentBattery.ToString() ?? string.Empty},
-                {nameof(SysStatusPayload.DropRateComm), TextRender.Progress(((vehicle.SysStatus.Value?.DropRateComm) ?? 0) / 10000.0, percentWidth )},
-                {nameof(SysStatusPayload.ErrorsComm),vehicle.SysStatus.Value?.ErrorsComm.ToString() ?? string.Empty},
-                {nameof(SysStatusPayload.Load),TextRender.Progress((vehicle.SysStatus.Value?.Load ?? 0) / 1000.0, percentWidth )},
-                {nameof(SysStatusPayload.VoltageBattery),vehicle.SysStatus.Value?.VoltageBattery.ToString() ?? string.Empty},
+                {nameof(HeartbeatPayload.SystemStatus),vehicle.RawHeartbeat.Value?.SystemStatus.ToString() ?? string.Empty},
+                {nameof(HeartbeatPayload.Type),vehicle.RawHeartbeat.Value?.Type.ToString()?? string.Empty },
+                {nameof(HeartbeatPayload.Autopilot),vehicle.RawHeartbeat.Value?.Autopilot.ToString()?? string.Empty},
+                {nameof(HeartbeatPayload.BaseMode),vehicle.RawHeartbeat.Value?.BaseMode.ToString("F")?? string.Empty},
+                {nameof(HeartbeatPayload.CustomMode),vehicle.RawHeartbeat.Value?.CustomMode.ToString() ?? string.Empty},
+                {nameof(HeartbeatPayload.MavlinkVersion),vehicle.RawHeartbeat.Value?.MavlinkVersion.ToString() ?? string.Empty},
+                {nameof(SysStatusPayload.BatteryRemaining),vehicle.RawSysStatus.Value?.BatteryRemaining.ToString() ?? string.Empty},
+                {nameof(SysStatusPayload.CurrentBattery),vehicle.RawSysStatus.Value?.CurrentBattery.ToString() ?? string.Empty},
+                {nameof(SysStatusPayload.DropRateComm), TextRender.Progress(((vehicle.RawSysStatus.Value?.DropRateComm) ?? 0) / 10000.0, percentWidth )},
+                {nameof(SysStatusPayload.ErrorsComm),vehicle.RawSysStatus.Value?.ErrorsComm.ToString() ?? string.Empty},
+                {nameof(SysStatusPayload.Load),TextRender.Progress((vehicle.RawSysStatus.Value?.Load ?? 0) / 1000.0, percentWidth )},
+                {nameof(SysStatusPayload.VoltageBattery),vehicle.RawSysStatus.Value?.VoltageBattery.ToString() ?? string.Empty},
                 {nameof(Vehicle.Gps),vehicle.Gps.Value.ToString() },
-                {nameof(GpsRawIntPayload.Alt),((vehicle.GpsRawInt.Value?.Alt ?? double.NaN) / 1000.0).ToString("F1")},
+                {nameof(Vehicle.Home),vehicle.Home.Value.ToString() },
+                {nameof(GpsRawIntPayload.Alt),((vehicle.RawGpsRawInt.Value?.Alt ?? double.NaN) / 1000.0).ToString("F1")},
                 
             };
             GetAddidtionslParams(vehicle, dict);
@@ -78,11 +79,27 @@ namespace Asv.Mavlink.Shell
                 var key = Console.ReadKey(true);
                 switch (key.Key)
                 {
+                    case ConsoleKey.RightArrow:
+                        var newPoint = GeoMath.RadialPoint(Vehicle.Gps.Value, 10, 90);
+                        Vehicle.DoReposition(20,true,float.NaN,(float)newPoint.Latitude, (float)newPoint.Longitude, (float)newPoint.Altitude,_cancel.Token).Wait();
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        var newPoint1 = GeoMath.RadialPoint(Vehicle.Gps.Value, 10, 270);
+                        Vehicle.DoReposition(20, true, float.NaN, (float)newPoint1.Latitude, (float)newPoint1.Longitude, (float)newPoint1.Altitude, _cancel.Token).Wait();
+                        break;
                     case ConsoleKey.UpArrow:
+                        var newPoint2 = GeoMath.RadialPoint(Vehicle.Gps.Value, 10, 0);
+                        Vehicle.DoReposition(20, true, float.NaN, (float)newPoint2.Latitude, (float)newPoint2.Longitude, (float)newPoint2.Altitude, _cancel.Token).Wait();
+                        break;
+                    case ConsoleKey.DownArrow:
+                        var newPoint3 = GeoMath.RadialPoint(Vehicle.Gps.Value, 10, 180);
+                        Vehicle.DoReposition(20, true, float.NaN, (float)newPoint3.Latitude, (float)newPoint3.Longitude, (float)newPoint3.Altitude, _cancel.Token).Wait();
+                        break;
+                    case ConsoleKey.PageUp:
                         var p = Vehicle.ReadParam("MPC_XY_VEL_MAX", CancellationToken.None).Result;
                         Vehicle.WriteParam("MPC_XY_VEL_MAX", p.RealValue.Value + 1.0f, _cancel.Token).Wait();
                         break;
-                    case ConsoleKey.DownArrow:
+                    case ConsoleKey.PageDown:
                         var p2 = Vehicle.ReadParam("MPC_XY_VEL_MAX", CancellationToken.None).Result;
                         Vehicle.WriteParam("MPC_XY_VEL_MAX", p2.RealValue.Value - 1.0f, _cancel.Token).Wait();
                         break;
