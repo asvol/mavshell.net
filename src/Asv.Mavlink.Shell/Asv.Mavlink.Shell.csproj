@@ -74,7 +74,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cmd\Command.cs" />
+    <Compile Include="Cmd\ParamsCommand.cs" />
     <Compile Include="Cmd\MavlinkCommand.cs" />
     <Compile Include="Cmd\PrintPx4VehicleState.cs" />
     <Compile Include="Cmd\PrintVehicleState.cs" />

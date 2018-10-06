@@ -83,6 +83,12 @@ namespace Asv.Mavlink.Shell
                     case ConsoleKey.T:
                         Vehicle.TakeOff(0,float.NaN, 55.146524f, 61.406014f, Vehicle.GpsRawInt.Value.Alt + 50f, CancellationToken.None).Wait();
                         break;
+                    case ConsoleKey.A:
+                        Vehicle.Arm(CancellationToken.None).Wait();
+                        break;
+                    case ConsoleKey.D:
+                        Vehicle.Disarm(CancellationToken.None).Wait();
+                        break;
                 }
             }
         }

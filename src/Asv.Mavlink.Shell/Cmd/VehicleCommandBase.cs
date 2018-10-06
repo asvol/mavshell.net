@@ -25,7 +25,7 @@ namespace Asv.Mavlink.Shell
 
         protected abstract IVehicle CreateVehicle(VehicleConfig config);
 
-        protected abstract Task<int> RunAsync(IVehicle config);
+        protected abstract Task<int> RunAsync(IVehicle vehicle);
         
     }
 }

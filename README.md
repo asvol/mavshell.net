@@ -3,19 +3,31 @@
 Mavlink shell tool, which use [MAVLink.net](https://github.com/asvol/mavlink.net) library.
 
 Example:
-```bash
+
+### ### Listens to all MAVLink packets, groups it by message id and prints statistic: rate in seconds (Hz)
+```
 mavshell-net.exe mavlink
 ```
 ![listen](img/1.PNG)
 
-```bash
+### Prints vehicle info
+
+```
 mavshell-net.exe info
 ```
-![listen](img/2.PNG)
-```bash
+
+![info](img/2.PNG)
+
+### Prints extended PX4 vehicle info
+```
 mavshell-net.exe px4info
 ```
-![listen](img/3.PNG)
+![px4info](img/3.PNG)
+
+### Real time vehicle params with text search by name and page navigation.
+mavshell-net.exe params
+
+![params](img/4.PNG)
 
 ## Versioning
 
