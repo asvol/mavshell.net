@@ -104,4 +104,16 @@
     <data name="TextRender_Progress_WidthError" xml:space="preserve">
     <value>{0} mast be more then {1}</value>
   </data>
+    <data name="DialogsApi_ask_yes_no" xml:space="preserve">
+    <value>Please input only 'y'=yes or 'n'=no char</value>
+  </data>
+    <data name="DialogsApi_ask_date_time_Please_input_date_time_value" xml:space="preserve">
+    <value>Please input date/time value</value>
+  </data>
+    <data name="DialogsApi_ask_integer_Please_input_integer_value" xml:space="preserve">
+    <value>Please input integer value</value>
+  </data>
+    <data name="DialogsApi_ask_double_Please_input_double_value" xml:space="preserve">
+    <value>Please input double value</value>
+  </data>
 </root>

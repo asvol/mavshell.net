@@ -78,6 +78,7 @@
     <Compile Include="Cmd\MavlinkCommand.cs" />
     <Compile Include="Cmd\PrintPx4VehicleState.cs" />
     <Compile Include="Cmd\PrintVehicleState.cs" />
+    <Compile Include="Cmd\SmoothFlightCommand.cs" />
     <Compile Include="Cmd\VehicleCommandBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,6 +88,7 @@
       <DependentUpon>RS.resx</DependentUpon>
     </Compile>
     <Compile Include="Tools\AssemblyInfoHelper.cs" />
+    <Compile Include="Tools\ConsoleDialogs.cs" />
     <Compile Include="Tools\ConsoleWelcomePrinter.cs" />
     <Compile Include="Tools\TextRender.cs" />
     <Compile Include="Tools\TextTable.cs" />

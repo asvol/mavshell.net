@@ -61,6 +61,42 @@ namespace Asv.Mavlink.Shell {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please input date/time value.
+        /// </summary>
+        internal static string DialogsApi_ask_date_time_Please_input_date_time_value {
+            get {
+                return ResourceManager.GetString("DialogsApi_ask_date_time_Please_input_date_time_value", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please input double value.
+        /// </summary>
+        internal static string DialogsApi_ask_double_Please_input_double_value {
+            get {
+                return ResourceManager.GetString("DialogsApi_ask_double_Please_input_double_value", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please input integer value.
+        /// </summary>
+        internal static string DialogsApi_ask_integer_Please_input_integer_value {
+            get {
+                return ResourceManager.GetString("DialogsApi_ask_integer_Please_input_integer_value", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please input only &apos;y&apos;=yes or &apos;n&apos;=no char.
+        /// </summary>
+        internal static string DialogsApi_ask_yes_no {
+            get {
+                return ResourceManager.GetString("DialogsApi_ask_yes_no", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Must be from 0.0 (0 %) to 1.0 (100%).
         /// </summary>
         internal static string TextRender_Progress_OutOfRange {
