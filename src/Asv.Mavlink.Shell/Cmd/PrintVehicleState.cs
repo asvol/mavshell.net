@@ -81,19 +81,19 @@ namespace Asv.Mavlink.Shell
                 {
                     case ConsoleKey.RightArrow:
                         var newPoint = GeoMath.RadialPoint(Vehicle.Gps.Value, 10, 90);
-                        Vehicle.DoReposition(20,true,float.NaN,(float)newPoint.Latitude, (float)newPoint.Longitude, (float)newPoint.Altitude,_cancel.Token).Wait();
+                        Vehicle.GoTo(20,true,float.NaN,(float)newPoint.Latitude, (float)newPoint.Longitude, (float)newPoint.Altitude,_cancel.Token).Wait();
                         break;
                     case ConsoleKey.LeftArrow:
                         var newPoint1 = GeoMath.RadialPoint(Vehicle.Gps.Value, 10, 270);
-                        Vehicle.DoReposition(20, true, float.NaN, (float)newPoint1.Latitude, (float)newPoint1.Longitude, (float)newPoint1.Altitude, _cancel.Token).Wait();
+                        Vehicle.GoTo(20, true, float.NaN, (float)newPoint1.Latitude, (float)newPoint1.Longitude, (float)newPoint1.Altitude, _cancel.Token).Wait();
                         break;
                     case ConsoleKey.UpArrow:
                         var newPoint2 = GeoMath.RadialPoint(Vehicle.Gps.Value, 10, 0);
-                        Vehicle.DoReposition(20, true, float.NaN, (float)newPoint2.Latitude, (float)newPoint2.Longitude, (float)newPoint2.Altitude, _cancel.Token).Wait();
+                        Vehicle.GoTo(20, true, float.NaN, (float)newPoint2.Latitude, (float)newPoint2.Longitude, (float)newPoint2.Altitude, _cancel.Token).Wait();
                         break;
                     case ConsoleKey.DownArrow:
                         var newPoint3 = GeoMath.RadialPoint(Vehicle.Gps.Value, 10, 180);
-                        Vehicle.DoReposition(20, true, float.NaN, (float)newPoint3.Latitude, (float)newPoint3.Longitude, (float)newPoint3.Altitude, _cancel.Token).Wait();
+                        Vehicle.GoTo(20, true, float.NaN, (float)newPoint3.Latitude, (float)newPoint3.Longitude, (float)newPoint3.Altitude, _cancel.Token).Wait();
                         break;
                     case ConsoleKey.PageUp:
                         var p = Vehicle.ReadParam("MPC_XY_VEL_MAX", CancellationToken.None).Result;
