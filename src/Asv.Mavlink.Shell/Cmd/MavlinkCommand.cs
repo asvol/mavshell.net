@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Mavlink.V2.Ardupilotmega;
 using Asv.Mavlink.V2.Common;
+using Asv.Mavlink.V2.Icarous;
+using Asv.Mavlink.V2.Uavionix;
 using ManyConsole;
 
 namespace Asv.Mavlink.Shell
@@ -29,7 +32,13 @@ namespace Asv.Mavlink.Shell
         public override int Run(string[] remainingArguments)
         {
             Task.Factory.StartNew(KeyListen);
-            var conn = new MavlinkV2Connection(_connectionString, _=>_.RegisterCommonDialect());
+            var conn = new MavlinkV2Connection(_connectionString, _=>
+            {
+                _.RegisterCommonDialect();
+                _.RegisterArdupilotmegaDialect();
+                _.RegisterIcarousDialect();
+                _.RegisterUavionixDialect();
+            });
             conn.Subscribe(OnPacket);
             conn.DeserizliaePackageErrors.Subscribe(OnError);
             while (!_cancel.IsCancellationRequested)
