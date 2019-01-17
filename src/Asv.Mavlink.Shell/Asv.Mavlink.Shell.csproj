@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Asv.Mavlink.Shell</RootNamespace>
     <AssemblyName>Asv.Mavlink.Shell</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -78,7 +79,6 @@
     <Compile Include="Cmd\MavlinkCommand.cs" />
     <Compile Include="Cmd\PrintPx4VehicleState.cs" />
     <Compile Include="Cmd\PrintVehicleState.cs" />
-    <Compile Include="Cmd\SmoothFlightCommand.cs" />
     <Compile Include="Cmd\VehicleCommandBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,17 +101,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\mavlink.net\src\Asv.Mavlink\Asv.Mavlink.csproj">
-      <Project>{21c4c26f-cfce-49e1-b045-717fdfeb5fa0}</Project>
-      <Name>Asv.Mavlink</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="RS.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RS.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\mavlink.net\src\Asv.Mavlink\Asv.Mavlink.csproj">
+      <Project>{21c4c26f-cfce-49e1-b045-717fdfeb5fa0}</Project>
+      <Name>Asv.Mavlink</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

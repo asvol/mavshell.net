@@ -17,7 +17,7 @@ namespace Asv.Mavlink.Shell
 
         protected override void GetAddidtionslParams(IVehicle vehicle, IDictionary<string, string> paramsToPrint)
         {
-            paramsToPrint.Add("PX4CustomMode", ((IVehiclePx4)vehicle).Mode.Value?.Mode.ToString() ?? String.Empty);
+            paramsToPrint.Add("PX4CustomMode", ((IVehiclePx4)vehicle).Mode.Value?.Px4Mode.ToString() ?? String.Empty);
         }
     }
 }

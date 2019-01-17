@@ -68,7 +68,7 @@ namespace Asv.Mavlink.Shell
                 {nameof(SysStatusPayload.ErrorsComm),vehicle.RawSysStatus.Value?.ErrorsComm.ToString() ?? string.Empty},
                 {nameof(SysStatusPayload.Load),TextRender.Progress((vehicle.RawSysStatus.Value?.Load ?? 0) / 1000.0, percentWidth )},
                 {nameof(SysStatusPayload.VoltageBattery),vehicle.RawSysStatus.Value?.VoltageBattery.ToString() ?? string.Empty},
-                {nameof(Vehicle.Gps),vehicle.Gps.Value.ToString() },
+                {nameof(Vehicle.GlobGps),vehicle.GlobGps.Value.ToString() },
                 {nameof(Vehicle.Home),vehicle.Home.Value.ToString() },
                 {nameof(GpsRawIntPayload.Alt),((vehicle.RawGpsRawInt.Value?.Alt ?? double.NaN) / 1000.0).ToString("F1")},
                 {"LastCommand",_lastCommand }
@@ -100,32 +100,32 @@ namespace Asv.Mavlink.Shell
                 {
                     case ConsoleKey.RightArrow:
                         _lastCommand = $"GOTO: delta={_deltaXY} Azimuth=90";
-                        var newPoint = GeoMath.RadialPoint(Vehicle.Gps.Value, _deltaXY, 90);
+                        var newPoint = GeoMath.RadialPoint(Vehicle.GlobGps.Value, _deltaXY, 90);
                         Vehicle.GoTo(20,true,float.NaN,(float)newPoint.Latitude, (float)newPoint.Longitude, (float)newPoint.Altitude,_cancel.Token).Wait();
                         break;
                     case ConsoleKey.LeftArrow:
                         _lastCommand = $"GOTO: delta={_deltaXY} Azimuth=270";
-                        var newPoint1 = GeoMath.RadialPoint(Vehicle.Gps.Value, _deltaXY, 270);
+                        var newPoint1 = GeoMath.RadialPoint(Vehicle.GlobGps.Value, _deltaXY, 270);
                         Vehicle.GoTo(20, true, float.NaN, (float)newPoint1.Latitude, (float)newPoint1.Longitude, (float)newPoint1.Altitude, _cancel.Token).Wait();
                         break;
                     case ConsoleKey.UpArrow:
                         _lastCommand = $"GOTO: delta={_deltaXY} Azimuth=0";
-                        var newPoint2 = GeoMath.RadialPoint(Vehicle.Gps.Value, _deltaXY, 0);
+                        var newPoint2 = GeoMath.RadialPoint(Vehicle.GlobGps.Value, _deltaXY, 0);
                         Vehicle.GoTo(20, true, float.NaN, (float)newPoint2.Latitude, (float)newPoint2.Longitude, (float)newPoint2.Altitude, _cancel.Token).Wait();
                         break;
                     case ConsoleKey.DownArrow:
                         _lastCommand = $"GOTO: delta={_deltaXY} Azimuth=180";
-                        var newPoint3 = GeoMath.RadialPoint(Vehicle.Gps.Value, _deltaXY, 180);
+                        var newPoint3 = GeoMath.RadialPoint(Vehicle.GlobGps.Value, _deltaXY, 180);
                         Vehicle.GoTo(20, true, float.NaN, (float)newPoint3.Latitude, (float)newPoint3.Longitude, (float)newPoint3.Altitude, _cancel.Token).Wait();
                         break;
                     case ConsoleKey.U:
-                        _lastCommand = $"Down: H={Vehicle.Gps.Value.Altitude:F1} D=+{_deltaZ}";
-                        var newPoint4 = Vehicle.Gps.Value.AddAltitude(_deltaZ);
+                        _lastCommand = $"Down: H={Vehicle.GlobGps.Value.Altitude:F1} D=+{_deltaZ}";
+                        var newPoint4 = Vehicle.GlobGps.Value.AddAltitude(_deltaZ);
                         Vehicle.GoTo(20, true, float.NaN, (float)newPoint4.Latitude, (float)newPoint4.Longitude, (float)newPoint4.Altitude, _cancel.Token).Wait();
                         break;
                     case ConsoleKey.D:
-                        var newPoint5 = Vehicle.Gps.Value.AddAltitude(-_deltaZ);
-                        _lastCommand = $"Down: H={Vehicle.Gps.Value.Altitude:F1} D=-{_deltaZ}";
+                        var newPoint5 = Vehicle.GlobGps.Value.AddAltitude(-_deltaZ);
+                        _lastCommand = $"Down: H={Vehicle.GlobGps.Value.Altitude:F1} D=-{_deltaZ}";
                         Vehicle.GoTo(20, true, float.NaN, (float)newPoint5.Latitude, (float)newPoint5.Longitude, (float)newPoint5.Altitude, _cancel.Token).Wait();
                         break;
                     case ConsoleKey.PageUp:
@@ -144,7 +144,7 @@ namespace Asv.Mavlink.Shell
                         break;
                     case ConsoleKey.T:
                         _lastCommand = $"Takeoff";
-                        Vehicle.TakeOff(0,90, (float) Vehicle.Gps.Value.Latitude, (float) Vehicle.Gps.Value.Longitude, (float) (Vehicle.Gps.Value.Altitude.Value + 50f), CancellationToken.None).Wait();
+                        Vehicle.TakeOff(0,90, (float) Vehicle.GlobGps.Value.Latitude, (float) Vehicle.GlobGps.Value.Longitude, (float) (Vehicle.GlobGps.Value.Altitude.Value + 50f), CancellationToken.None).Wait();
                         break;
                     case ConsoleKey.A:
                         _lastCommand = $"Armed";

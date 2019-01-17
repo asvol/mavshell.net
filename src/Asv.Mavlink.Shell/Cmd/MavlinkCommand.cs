@@ -40,7 +40,7 @@ namespace Asv.Mavlink.Shell
                 _.RegisterUavionixDialect();
             });
             conn.Subscribe(OnPacket);
-            conn.DeserizliaePackageErrors.Subscribe(OnError);
+            conn.DeserializePackageErrors.Subscribe(OnError);
             while (!_cancel.IsCancellationRequested)
             {
                 Redraw();
