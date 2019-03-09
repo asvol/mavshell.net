@@ -141,13 +141,15 @@ namespace Asv.Mavlink.Shell
                 _rw.ExitWriteLock();
             }
         }
+
+        internal class DisplayRow
+        {
+            public string Message { get; set; }
+            public int Count { get; set; }
+            public string Freq { get; set; }
+            public int Msg { get; set; }
+        }
     }
 
-    internal class DisplayRow
-    {
-        public string Message { get; set; }
-        public int Count { get; set; }
-        public string Freq { get; set; }
-        public int Msg { get; set; }
-    }
+   
 }

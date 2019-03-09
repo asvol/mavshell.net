@@ -28,4 +28,7 @@ namespace Asv.Mavlink.Shell
         protected abstract Task<int> RunAsync(IVehicle vehicle);
         
     }
+
+
+
 }
